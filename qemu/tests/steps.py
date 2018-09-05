@@ -9,6 +9,8 @@ import time
 import shutil
 import logging
 
+from autotest.client.shared import error
+
 from virttest import utils_misc
 from virttest import ppm_utils
 from virttest import qemu_monitor
@@ -189,7 +191,7 @@ def barrier_2(test, vm, words, params, debug_dir, data_scrdump_filename,
         # Print error messages and fail the test
         long_message = message + "\n(see analysis at %s)" % debug_dir
         logging.error(long_message)
-        test.fail(message)
+        raise error.TestFail(message)
 
 
 def run(test, params, env):
@@ -203,7 +205,7 @@ def run(test, params, env):
 
     steps_filename = utils_misc.get_path(test.virtdir, steps_filename)
     if not os.path.exists(steps_filename):
-        test.error("Steps file not found: %s" % steps_filename)
+        raise error.TestError("Steps file not found: %s" % steps_filename)
 
     sf = open(steps_filename, "r")
     lines = sf.readlines()
